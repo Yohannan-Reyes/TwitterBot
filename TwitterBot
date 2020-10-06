@@ -1,0 +1,368 @@
+# =============================================================================
+# %% Settings
+# =============================================================================
+N = 32
+
+
+# =============================================================================
+# %% Web Paths
+# =============================================================================
+
+temp_mail_url = "https://temp-mail.org/es/"
+
+
+
+# =============================================================================
+# %%PATHS
+# =============================================================================
+
+#tempmail_PATH = 'D:\\LifeWare Technologies\\Bots\Scripts\\TempMail\\'
+PATH_chrome = r'D:/LifeWare Technologies/Alarm System/DataCapture/Templates/chromedriver.exe'
+mail_data_path = 'D:\\LifeWare Technologies\\Bots\\Mails\\'
+
+# =============================================================================
+# %% Save in
+# =============================================================================
+
+
+# =============================================================================
+# %% Packages
+# =============================================================================
+#import warnings
+#warnings.simplefilter(action='ignore', category='All')
+
+#import requests, os, gc, json, time, random, nltk, string, re
+import requests, os, gc, json, time, random, string, re
+import numpy as np, pandas as pd
+#pd.reset_option('all')
+
+
+from threading import Thread
+from threading import Timer
+from datetime import datetime
+from bs4 import BeautifulSoup
+
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
+from collections import OrderedDict
+
+import matplotlib.pyplot as plt
+from PIL import Image
+from collections import Counter
+
+#from nltk.tokenize import RegexpTokenizer
+#from wordcloud import WordCloud
+#import wordcloud
+#from nltk.stem import WordNetLemmatizer
+#from nltk.stem import PorterStemmer
+#from nltk.stem import LancasterStemmer
+#from nltk.stem.snowball import SnowballStemmer
+#from nltk.corpus import cess_esp as cess
+#from nltk import UnigramTagger as ut
+#from nltk import BigramTagger as bt
+#from nltk import pos_tag, sent_tokenize, word_tokenize, BigramAssocMeasures,\
+#    BigramCollocationFinder, TrigramAssocMeasures, TrigramCollocationFinder
+
+
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
+
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+
+from tqdm import tqdm
+
+#from gensim.test.utils import common_texts, get_tmpfile
+#from gensim.models import Word2Vec
+#from gensim.models import KeyedVectors
+#
+#from sentiment_analysis_spanish import sentiment_analysis #https://pypi.org/project/sentiment-analysis-spanish/
+#from classifier import SentimentClassifier #https://github.com/aylliote/senti-py
+#from sentileak import SentiLeak
+
+#os.chdir(tempmail_PATH)
+#from tempMail2 import TempMail
+
+import pyperclip
+
+import string
+import random
+#nltk.download("stopwords")
+#nltk.download("punkt")
+
+#os.chdir(downloads_path)
+
+
+# =============================================================================
+# %% Selenium Functions
+# =============================================================================
+
+def reqPage(url,sleeping_time,class_name):
+    time.sleep(2)
+    browser.get(url)
+    time.sleep(sleeping_time)
+    content = browser.page_source
+    page_parsed = BeautifulSoup(content, 'html.parser')
+    wait = WebDriverWait(browser, 600)
+    main_trending = page_parsed.find_all(class_=class_name)
+    return main_trending
+
+
+def reqPageMail(browser,url,sleeping_time):
+    time.sleep(2)
+    browser.get(url)
+    time.sleep(sleeping_time)
+    content = browser.page_source
+    page_parsed = BeautifulSoup(content, 'html.parser')
+    browser.find_element_by_css_selector(".input-box-col.hidden-xs-sm").click()
+    x = pyperclip.paste()
+    return x
+
+def reqPageCreateTwitter(browser_twitter,sleeping_time,mail,pwd,d_o_b):
+    time.sleep(2)
+    browser_twitter.get('https://twitter.com/?lang=es')
+    time.sleep(sleeping_time)
+
+#    browser_twitter.find_element_by_css_selector("css-901oao r-1awozwy r-jwli3a r-6koalj r-18u37iz r-16y2uox r-1qd0xha r-a023e6 r-vw2c0b r-1777fci r-eljoum r-dnmrzs r-bcqeeo r-q4m81j r-qvutc0").click()
+    browser_twitter.find_element_by_css_selector('.css-901oao.r-1awozwy.r-jwli3a.r-6koalj.r-18u37iz.r-16y2uox.r-1qd0xha.r-a023e6.r-vw2c0b.r-1777fci.r-eljoum.r-dnmrzs.r-bcqeeo.r-q4m81j.r-qvutc0').click()
+    time.sleep(sleeping_time)
+#    browser_twitter.find_element_by_css_selector('.css-901oao.css-16my406.r-1qd0xha.r-ad9z0x.r-bcqeeo.r-qvutc0').click()
+    time.sleep(2)
+    time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+    browser_twitter.find_element_by_css_selector('.css-18t94o4.css-901oao.r-k200y.r-1n1174f.r-1qd0xha.r-a023e6.r-16dba41.r-ad9z0x.r-19h5ruw.r-bcqeeo.r-qvutc0').click()
+
+    inputElement = browser_twitter.find_elements_by_css_selector('.r-30o5oe.r-1niwhzg.r-17gur6a.r-1yadl64.r-deolkf.r-homxoj.r-poiln3.r-7cikom.r-1ny4l3l.r-1inuy60.r-utggzx.r-vmopo1.r-1w50u8q.r-1lrr6ok.r-1dz5y72.r-fdjqy7.r-13qz1uu')
+#    inputElement[0].send_keys(mail.split('@')[0])
+    for key_ in mail.split('@')[0]:
+        inputElement[0].send_keys(key_)
+        time.sleep(abs(np.random.normal(scale=0.05)))
+    
+#    inputElement = browser_twitter.find_element_by_name('email')
+#    inputElement[1].send_keys(mail)
+    for key_ in mail:
+        inputElement[1].send_keys(key_)
+        time.sleep(abs(np.random.normal(scale=0.05)))
+    
+#    inputElement = browser_twitter.find_element_by_css_selector('.r-30o5oe.r-1niwhzg.r-17gur6a.r-1yadl64.r-deolkf.r-homxoj.r-poiln3.r-7cikom.r-1ny4l3l.r-1inuy60.r-utggzx.r-vmopo1.r-1w50u8q.r-1lrr6ok.r-1dz5y72.r-fdjqy7.r-13qz1uu')
+    select_tag = browser_twitter.find_elements_by_css_selector("[aria-label=Mes]")
+    select_tag = browser_twitter.find_elements_by_tag_name('select')
+
+#    [Select(select).select_by_value(str(d_o_b[i0])) for i0, select in enumerate(select_tag)]
+#    select = Select(select_tag[0])
+#    select.select_by_value(str(d_o_b[0]))
+#    select = Select(select_tag[1])
+#    select.select_by_value(str(d_o_b[1]))
+#    select = Select(select_tag[2])
+#    select.select_by_value(str(d_o_b[2]))
+    for i0, select in enumerate(select_tag):
+        Select(select).select_by_value(str(d_o_b[i0]))
+        time.sleep(abs(np.random.normal(scale=0.05)))
+
+    time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+    
+###############################################################################
+    
+    try:
+    #    "css-18t94o4 css-1dbjc4n r-urgr8i r-42olwf r-sdzlij r-1phboty r-rs99b7 r-1w2pmg r-1vsu8ta r-aj3cln r-1ny4l3l r-1fneopy r-o7ynqc r-6416eg r-lrvibr"
+        browser_twitter.find_element_by_css_selector('.css-18t94o4.css-1dbjc4n.r-urgr8i.r-42olwf.r-sdzlij.r-1phboty.r-rs99b7.r-1w2pmg.r-1vsu8ta.r-aj3cln.r-1ny4l3l.r-1fneopy.r-o7ynqc.r-6416eg.r-lrvibr').click()
+        time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+    except:
+        try:
+        #    "css-18t94o4 css-1dbjc4n r-1q3imqu r-42olwf r-sdzlij r-1phboty r-rs99b7 r-1w2pmg r-1vsu8ta r-aj3cln r-1ny4l3l r-1fneopy r-o7ynqc r-6416eg r-lrvibr"
+            browser_twitter.find_element_by_css_selector('.css-18t94o4.css-1dbjc4n.r-1q3imqu.r-42olwf.r-sdzlij.r-1phboty.r-rs99b7.r-1w2pmg.r-1vsu8ta.r-aj3cln.r-1ny4l3l.r-1fneopy.r-o7ynqc.r-6416eg.r-lrvibr').click()
+            time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+        except:
+            #    "css-18t94o4 css-1dbjc4n r-urgr8i r-42olwf r-sdzlij r-1phboty r-rs99b7 r-1w2pmg r-19h5ruw r-1jayybb r-17bavie r-1ny4l3l r-15bsvpr r-o7ynqc r-6416eg r-lrvibr"
+                browser_twitter.find_element_by_css_selector('.css-18t94o4.css-1dbjc4n.r-urgr8i.r-42olwf.r-sdzlij.r-1phboty.r-rs99b7.r-1w2pmg.r-19h5ruw.r-1jayybb.r-17bavie.r-1ny4l3l.r-15bsvpr.r-o7ynqc.r-6416eg.r-lrvibr').click()
+                time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+###############################################################################
+    try:
+    #    "css-18t94o4 css-1dbjc4n r-urgr8i r-42olwf r-sdzlij r-1phboty r-rs99b7 r-1w2pmg r-1vsu8ta r-aj3cln r-1ny4l3l r-1fneopy r-o7ynqc r-6416eg r-lrvibr"
+        browser_twitter.find_element_by_css_selector('.css-18t94o4.css-1dbjc4n.r-urgr8i.r-42olwf.r-sdzlij.r-1phboty.r-rs99b7.r-1w2pmg.r-1vsu8ta.r-aj3cln.r-1ny4l3l.r-1fneopy.r-o7ynqc.r-6416eg.r-lrvibr').click()
+        time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+    except:
+        try:
+        #    "css-18t94o4 css-1dbjc4n r-1q3imqu r-42olwf r-sdzlij r-1phboty r-rs99b7 r-1w2pmg r-1vsu8ta r-aj3cln r-1ny4l3l r-1fneopy r-o7ynqc r-6416eg r-lrvibr"
+            browser_twitter.find_element_by_css_selector('.css-18t94o4.css-1dbjc4n.r-1q3imqu.r-42olwf.r-sdzlij.r-1phboty.r-rs99b7.r-1w2pmg.r-1vsu8ta.r-aj3cln.r-1ny4l3l.r-1fneopy.r-o7ynqc.r-6416eg.r-lrvibr').click()
+            time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+        except:
+            #    "css-18t94o4 css-1dbjc4n r-urgr8i r-42olwf r-sdzlij r-1phboty r-rs99b7 r-1w2pmg r-19h5ruw r-1jayybb r-17bavie r-1ny4l3l r-15bsvpr r-o7ynqc r-6416eg r-lrvibr"
+                browser_twitter.find_element_by_css_selector('.css-18t94o4.css-1dbjc4n.r-urgr8i.r-42olwf.r-sdzlij.r-1phboty.r-rs99b7.r-1w2pmg.r-19h5ruw.r-1jayybb.r-17bavie.r-1ny4l3l.r-15bsvpr.r-o7ynqc.r-6416eg.r-lrvibr').click()
+                time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+###############################################################################
+    try:
+    #    "css-18t94o4 css-1dbjc4n r-urgr8i r-42olwf r-sdzlij r-1phboty r-rs99b7 r-1w2pmg r-1vsu8ta r-aj3cln r-1ny4l3l r-1fneopy r-o7ynqc r-6416eg r-lrvibr"
+        browser_twitter.find_element_by_css_selector('.css-18t94o4.css-1dbjc4n.r-urgr8i.r-42olwf.r-sdzlij.r-1phboty.r-rs99b7.r-1w2pmg.r-1vsu8ta.r-aj3cln.r-1ny4l3l.r-1fneopy.r-o7ynqc.r-6416eg.r-lrvibr').click()
+        time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+    except:
+        try:
+        #    "css-18t94o4 css-1dbjc4n r-1q3imqu r-42olwf r-sdzlij r-1phboty r-rs99b7 r-1w2pmg r-1vsu8ta r-aj3cln r-1ny4l3l r-1fneopy r-o7ynqc r-6416eg r-lrvibr"
+            browser_twitter.find_element_by_css_selector('.css-18t94o4.css-1dbjc4n.r-1q3imqu.r-42olwf.r-sdzlij.r-1phboty.r-rs99b7.r-1w2pmg.r-1vsu8ta.r-aj3cln.r-1ny4l3l.r-1fneopy.r-o7ynqc.r-6416eg.r-lrvibr').click()
+            time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+        except:
+            #    "css-18t94o4 css-1dbjc4n r-urgr8i r-42olwf r-sdzlij r-1phboty r-rs99b7 r-1w2pmg r-19h5ruw r-1jayybb r-17bavie r-1ny4l3l r-15bsvpr r-o7ynqc r-6416eg r-lrvibr"
+                browser_twitter.find_element_by_css_selector('.css-18t94o4.css-1dbjc4n.r-urgr8i.r-42olwf.r-sdzlij.r-1phboty.r-rs99b7.r-1w2pmg.r-19h5ruw.r-1jayybb.r-17bavie.r-1ny4l3l.r-15bsvpr.r-o7ynqc.r-6416eg.r-lrvibr').click()
+                time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+###############################################################################
+    
+    
+#    "col-sm-12 col-md-12 col-lg-12 col-xl-8"
+    try:
+        content = browser.page_source
+        page_parsed = BeautifulSoup(content, 'html.parser')
+        main_trending = page_parsed.find_all(class_="viewLink title-subject")
+        main_trending[1].text.split(' ')
+        code = main_trending[1].text.split(' ')[0]
+    except:
+        browser.execute_script("window.scrollTo(0,  500)")
+        content = browser.page_source
+        page_parsed = BeautifulSoup(content, 'html.parser')
+        main_trending = page_parsed.find_all(class_="viewLink title-subject")
+        main_trending[1].text.split(' ')
+        code = main_trending[1].text.split(' ')[0]
+        
+    inputElement = browser_twitter.find_elements_by_css_selector('.r-30o5oe.r-1niwhzg.r-17gur6a.r-1yadl64.r-deolkf.r-homxoj.r-poiln3.r-7cikom.r-1ny4l3l.r-1inuy60.r-utggzx.r-vmopo1.r-1w50u8q.r-1lrr6ok.r-1dz5y72.r-fdjqy7.r-13qz1uu')
+    for key_ in code:
+        inputElement[0].send_keys(key_)
+        time.sleep(abs(np.random.normal(loc=0.5, scale=0.05)))
+    time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+    
+    browser_twitter.find_element_by_css_selector('.css-18t94o4.css-1dbjc4n.r-urgr8i.r-42olwf.r-sdzlij.r-1phboty.r-rs99b7.r-1w2pmg.r-1vsu8ta.r-aj3cln.r-1ny4l3l.r-1fneopy.r-o7ynqc.r-6416eg.r-lrvibr').click()
+    time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+
+    inputElement = browser_twitter.find_elements_by_css_selector('.r-30o5oe.r-1niwhzg.r-17gur6a.r-1yadl64.r-deolkf.r-homxoj.r-poiln3.r-7cikom.r-1ny4l3l.r-1inuy60.r-utggzx.r-vmopo1.r-1w50u8q.r-1lrr6ok.r-1dz5y72.r-fdjqy7.r-13qz1uu')
+    for key_ in pwd:
+        inputElement[0].send_keys(key_)
+        time.sleep(abs(np.random.normal(loc=0.5, scale=0.05)))
+    time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+
+    browser_twitter.find_element_by_css_selector('.css-18t94o4.css-1dbjc4n.r-urgr8i.r-42olwf.r-sdzlij.r-1phboty.r-rs99b7.r-1w2pmg.r-1vsu8ta.r-aj3cln.r-1ny4l3l.r-1fneopy.r-o7ynqc.r-6416eg.r-lrvibr').click()
+
+    time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+    browser_twitter.find_element_by_css_selector('.css-901oao.r-1awozwy.r-13gxpu9.r-6koalj.r-18u37iz.r-16y2uox.r-1qd0xha.r-a023e6.r-vw2c0b.r-1777fci.r-eljoum.r-dnmrzs.r-bcqeeo.r-q4m81j.r-qvutc0').click()
+
+    try:
+    #    "css-18t94o4 css-1dbjc4n r-urgr8i r-42olwf r-sdzlij r-1phboty r-rs99b7 r-1w2pmg r-1vsu8ta r-aj3cln r-1ny4l3l r-1fneopy r-o7ynqc r-6416eg r-lrvibr"
+        browser_twitter.find_element_by_css_selector('.css-18t94o4.css-1dbjc4n.r-urgr8i.r-42olwf.r-sdzlij.r-1phboty.r-rs99b7.r-1w2pmg.r-1vsu8ta.r-aj3cln.r-1ny4l3l.r-1fneopy.r-o7ynqc.r-6416eg.r-lrvibr').click()
+        time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+    except:
+        try:
+        #    "css-18t94o4 css-1dbjc4n r-1q3imqu r-42olwf r-sdzlij r-1phboty r-rs99b7 r-1w2pmg r-1vsu8ta r-aj3cln r-1ny4l3l r-1fneopy r-o7ynqc r-6416eg r-lrvibr"
+            browser_twitter.find_element_by_css_selector('.css-18t94o4.css-1dbjc4n.r-1q3imqu.r-42olwf.r-sdzlij.r-1phboty.r-rs99b7.r-1w2pmg.r-1vsu8ta.r-aj3cln.r-1ny4l3l.r-1fneopy.r-o7ynqc.r-6416eg.r-lrvibr').click()
+            time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+        except:
+            #    "css-18t94o4 css-1dbjc4n r-urgr8i r-42olwf r-sdzlij r-1phboty r-rs99b7 r-1w2pmg r-19h5ruw r-1jayybb r-17bavie r-1ny4l3l r-15bsvpr r-o7ynqc r-6416eg r-lrvibr"
+                browser_twitter.find_element_by_css_selector('.css-18t94o4.css-1dbjc4n.r-urgr8i.r-42olwf.r-sdzlij.r-1phboty.r-rs99b7.r-1w2pmg.r-19h5ruw.r-1jayybb.r-17bavie.r-1ny4l3l.r-15bsvpr.r-o7ynqc.r-6416eg.r-lrvibr').click()
+                time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+
+    time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+    browser_twitter.find_element_by_css_selector('.css-901oao.r-1awozwy.r-13gxpu9.r-6koalj.r-18u37iz.r-16y2uox.r-1qd0xha.r-a023e6.r-vw2c0b.r-1777fci.r-eljoum.r-dnmrzs.r-bcqeeo.r-q4m81j.r-qvutc0').click()
+
+    try:
+    #    "css-18t94o4 css-1dbjc4n r-urgr8i r-42olwf r-sdzlij r-1phboty r-rs99b7 r-1w2pmg r-1vsu8ta r-aj3cln r-1ny4l3l r-1fneopy r-o7ynqc r-6416eg r-lrvibr"
+        browser_twitter.find_element_by_css_selector('.css-18t94o4.css-1dbjc4n.r-urgr8i.r-42olwf.r-sdzlij.r-1phboty.r-rs99b7.r-1w2pmg.r-1vsu8ta.r-aj3cln.r-1ny4l3l.r-1fneopy.r-o7ynqc.r-6416eg.r-lrvibr').click()
+        time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+    except:
+        try:
+        #    "css-18t94o4 css-1dbjc4n r-1q3imqu r-42olwf r-sdzlij r-1phboty r-rs99b7 r-1w2pmg r-1vsu8ta r-aj3cln r-1ny4l3l r-1fneopy r-o7ynqc r-6416eg r-lrvibr"
+            browser_twitter.find_element_by_css_selector('.css-18t94o4.css-1dbjc4n.r-1q3imqu.r-42olwf.r-sdzlij.r-1phboty.r-rs99b7.r-1w2pmg.r-1vsu8ta.r-aj3cln.r-1ny4l3l.r-1fneopy.r-o7ynqc.r-6416eg.r-lrvibr').click()
+            time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+        except:
+            #    "css-18t94o4 css-1dbjc4n r-urgr8i r-42olwf r-sdzlij r-1phboty r-rs99b7 r-1w2pmg r-19h5ruw r-1jayybb r-17bavie r-1ny4l3l r-15bsvpr r-o7ynqc r-6416eg r-lrvibr"
+                browser_twitter.find_element_by_css_selector('.css-18t94o4.css-1dbjc4n.r-urgr8i.r-42olwf.r-sdzlij.r-1phboty.r-rs99b7.r-1w2pmg.r-19h5ruw.r-1jayybb.r-17bavie.r-1ny4l3l.r-15bsvpr.r-o7ynqc.r-6416eg.r-lrvibr').click()
+                time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+
+#    time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+#    browser_twitter.find_element_by_css_selector('.css-901oao.r-1awozwy.r-13gxpu9.r-6koalj.r-18u37iz.r-16y2uox.r-1qd0xha.r-a023e6.r-vw2c0b.r-1777fci.r-eljoum.r-dnmrzs.r-bcqeeo.r-q4m81j.r-qvutc0').click()
+#
+#    time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+#    browser_twitter.find_elements_by_css_selector('.css-4rbku5.css-18t94o4.css-1dbjc4n.r-1habvwh.r-1loqt21.r-6koalj.r-eqz5dr.r-16y2uox.r-1ny4l3l.r-1ag2gil.r-13qz1uu')[1].click()
+#    time.sleep(abs(np.random.normal(loc = 5, scale=1)))
+#
+#    inputElement = browser_twitter.find_elements_by_css_selector('.r-30o5oe.r-1niwhzg.r-17gur6a.r-1yadl64.r-deolkf.r-homxoj.r-poiln3.r-7cikom.r-1ny4l3l.r-1sp51qo.r-1lrr6ok.r-1dz5y72.r-fdjqy7.r-13qz1uu')
+##    inputElement[0].send_keys(mail.split('@')[0])
+#    for key_ in "VICTOR PAEZ CALVILLO":
+#        inputElement[0].send_keys(key_)
+#        time.sleep(abs(np.random.normal(scale=0.05)))
+#    inputElement[0].send_keys(key_)
+
+    time.sleep(2)
+    browser_twitter.get('https://twitter.com/?lang=es')
+
+# =============================================================================
+# %% Functions
+# =============================================================================
+
+def randPWD(N):
+    return ''.join(random.choice(string.ascii_uppercase + string.digits + string.punctuation) for _ in range(N))
+
+
+def randMonth():
+    month = random.choice(list(range(1,12)))
+    day = random.choice(list(range(1,28)))
+    year = random.choice(list(range(1980,2006)))
+    return [month,day,year]
+
+
+
+# =============================================================================     
+# %% Mails List
+# =============================================================================
+
+file = open(mail_data_path+"data_mails.csv", "a")
+#file.write( "Mail Address, Password\n" )
+#file.flush()
+mails = []
+
+# =============================================================================
+# %% Temp Mail Creations
+# =============================================================================
+
+while True:
+    for i0 in range(3):
+        options = webdriver.ChromeOptions()
+        options.add_argument("accept-language=en-US")
+        options.add_experimental_option('prefs', {'intl.accept_languages': 'en,en_US'})
+        capabilities = DesiredCapabilities.FIREFOX.copy()
+        capabilities['platform'] = "WINDOWS"
+        capabilities['version'] = "10"
+        
+        browser = webdriver.Chrome(executable_path=PATH_chrome,chrome_options=options,desired_capabilities=capabilities)
+        mail = reqPageMail(browser,temp_mail_url,2)
+        pwd = randPWD(32)
+        file.write(mail+','+pwd+'\n')
+        file.flush()
+        time.sleep(2)
+        d_o_b = randMonth()
+
+        
+        options = webdriver.ChromeOptions()
+        options.add_argument("accept-language=es-MX")
+        options.add_experimental_option('prefs', {'intl.accept_languages': 'es,es_MX'})
+        browser_twitter = webdriver.Chrome(executable_path=PATH_chrome)
+        reqPageCreateTwitter(browser_twitter,abs(np.random.normal()),mail,pwd,d_o_b)
+        browser_twitter.close()
+        
+        time.sleep(abs(np.random.normal(loc = 2, scale=1)))
+        browser.find_element_by_id("click-to-delete").click()
+        
+        time.sleep(abs(np.random.normal(loc = 120, scale=40)))
+    
+    time.sleep(abs(np.random.normal(loc = 60*60, scale=300)))
+
+
+# =============================================================================
+# %% CODE
+# =============================================================================
+
+
+# =============================================================================
+# %% END
+# =============================================================================
+
